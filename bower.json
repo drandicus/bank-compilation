@@ -1,0 +1,28 @@
+{
+  "name": "bank-compilation",
+  "authors": [
+    "Diego Deveras"
+  ],
+  "description": "compiles some xlsx into readable web page",
+  "main": "index.html",
+  "keywords": [
+    "metrobank",
+    "xlsx",
+    "web",
+    "csv"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "^4.6.3",
+    "jquery-csv": "^0.8.1",
+    "js-xlsx": "^0.8.0"
+  }
+}

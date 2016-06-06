@@ -1,0 +1,52 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+
+  <title>Mom's Banking App</title>
+</head>
+<body>
+
+  <fieldset>
+      <legend>Upload your CSV Files</legend>
+      <input type="file" name="File Upload" id="txtFileUpload" accept=".xlsx" multiple/>
+      <button class='btn btn-default' id='btn-submit'>Submit</button>
+  </fieldset>
+
+  <div id='result'>
+    <fieldset>
+      <legend>Select Stock Type</legend>
+      <select id='stock-type'></select>
+    </fieldset>
+
+
+    <div id='parse-results'>
+    </div>
+
+    <table class='table table-striped tablesorter' id='table' style='margin-top:20px'>
+      <thead>
+        <tr>
+          <th>IMA Nc</th>
+          <th>Account Name</th>
+          <th>Quantity/Units HLD</th>
+          <th>WTD Ave YTM/ Cost</th>
+          <th>%Port</th>
+        </tr>
+      </thead>
+      <tbody id='res-table'>
+
+    </tbody>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+  <script src="bower_components/js-xlsx/jszip.js"></script>
+  <script src="bower_components/js-xlsx/dist/xlsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

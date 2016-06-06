@@ -1,0 +1,17 @@
+body {
+	padding:20px;
+}
+
+button {
+	margin-top:20px;
+}
+
+#result {
+	margin-top:50px;
+}
+
+/*
+#result{
+	display:none;
+}
+*/
