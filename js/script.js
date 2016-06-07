@@ -21,6 +21,19 @@ function fixdata(data) {
 	return o;
 }
 
+function display_blank(ima, name){
+	$('#res-table').append("<tr>");
+
+	$('#res-table').append("<td>" + ima + "</td>");
+	$('#res-table').append("<td>" + name + "</td>");
+	$('#res-table').append("<td> N/A </td>");
+	$('#res-table').append("<td> N/A </td>");
+	$('#res-table').append("<td> N/A </td>");
+
+
+	$('#res-table').append("</tr>");
+}
+
 function display_stock(ima, name, stock){
 	$('#res-table').append("<tr>");
 
@@ -31,7 +44,7 @@ function display_stock(ima, name, stock){
 	$('#res-table').append("<td>" + stock["PORT"] + "</td>");
 
 
-	$('#res-table').append("<td>");
+	$('#res-table').append("</tr>");
 }
 
 function update_table(key, res){
@@ -41,16 +54,11 @@ function update_table(key, res){
 		var stocks = item["STOCKS"];
 
 		if(typeof stocks[key] === "undefined"){
+			display_blank(item["IMA"], item["NAME"]);
 			return;
 		}
-
-
 		display_stock(item["IMA"], item["NAME"], stocks[key]);
 	})
-
-	
-	$('#table').tablesorter();
-
 
 }
 
@@ -131,7 +139,7 @@ function process_csv(txt){
 			check = true;
 		} 
 
-		else if(spl[0] == ""){
+		else if((spl[0] == "") || (spl[0] == "Unrealized Gain/Loss")){
 			check = false;
 		} 
 
@@ -140,7 +148,15 @@ function process_csv(txt){
 
 			
 			var split = arr[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-			if(split[0] == "Gain/Loss" || split[0] == "Port"){
+
+			if(split[0] == "Gain/Loss" 
+				|| split[0] == "Port" 
+				|| split[0] == "Unrealized Gain/Loss" 
+				|| split[0] == "% of Port" 
+				|| split[0] == " Investment Type "
+				|| split[0].indexOf("Sheet") > -1
+				|| split[0].indexOf("report name") > -1
+			){
 				continue;
 			}
 
@@ -150,16 +166,27 @@ function process_csv(txt){
 
 			if(alternate){
 				secName = split[4];
-				//console.log(res[latest]);
+
+				if(typeof split[5] == "undefined"){
+					console.log(split);
+				}
+
+				var hld = split[5].replace(/['"]+/g, '');
 				res[latest]["STOCKS"][secName] = {
-					"HLD": split[5],
+					"HLD": hld,
 					"COST": split[6],
 					"PORT": split[11]
 				};
 			} else {
 				secName = split[0];
+
+				if(typeof split[3] == "undefined"){
+					console.log(split);
+				}
+
+				var hld = split[3].replace(/['"]+/g, '');
 				res[latest]["STOCKS"][secName] = {
-					"HLD": split[3],
+					"HLD": hld,
 					"COST": split[4],
 					"PORT": split[10]
 				};
@@ -182,7 +209,6 @@ function process_wb(workbook) {
 	});
 
 	var csv = result.join("\n");
-
 	return process_csv(csv);
 }
 

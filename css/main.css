@@ -10,8 +10,6 @@ button {
 	margin-top:50px;
 }
 
-/*
-#result{
-	display:none;
+table tbody tr:hover{
+	background-color:#888;
 }
-*/
