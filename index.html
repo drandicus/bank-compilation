@@ -42,11 +42,59 @@
 
       </tbody>
     </table>
+
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id='displaySingle'>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Change %Port</h4>
+        </div>
+        <div class="modal-body">
+          <fieldset>
+            <legend>Stock Information</legend>
+            <label><b>IMA:</b></label><br/>
+            <label id='modal-ima'></label><br/>
+            <label><b>Name:</b></label><br/>
+            <label id='modal-name'></label><br/>
+            <label><b>HLD:</b></label><br/>
+            <label id='modal-hld'></label><br/>
+            <label><b>Cost:</b></label><br/>
+            <label id='modal-cost'></label><br/>
+          </fieldset>
+
+          <fieldset class='modal-field'>
+            <legend>Alter %Port</legend>
+            <label><b>Old Port%:</b> </label><br/>
+            <label id='modal-old'></label><br/>
+
+
+            <label><b>New Port%:</b> </label><br/>
+            <input type='number' step='any' id='modal-new' placeholder='New Port %'/><br/>
+
+            <label><b>Market Price:</b></label><br/>
+            <input type='number' step='any' id='modal-mp' placeholder='New Market Price'/><br/>
+            <button class='btn btn-primary' id='modal-calculate'>Calculate</button><br/><br/>
+
+            <label id='modal-buysell'></label><br/>
+            <input type='number' disabled id='modal-result'/><br/>
+          </fieldset>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id='modalSave'>Apply changes</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
   <script src="bower_components/js-xlsx/jszip.js"></script>
   <script src="bower_components/js-xlsx/dist/xlsx.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
   <script src="js/script.js"></script>
 </body>

@@ -11,5 +11,9 @@ button {
 }
 
 table tbody tr:hover{
-	background-color:#888;
+	cursor:pointer;
+}
+
+label{
+	font-weight: normal;
 }

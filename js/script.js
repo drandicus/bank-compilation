@@ -4,11 +4,9 @@ var compiled = [];
 function compile_results(res){
 
 	for(var i=0; i<res.length; i++){
-		//console.log(res[i]);
+
 		compiled.push(res[i]);
 	}
-
-	reset();
 	get_options(compiled);
 
 }
@@ -22,42 +20,143 @@ function fixdata(data) {
 }
 
 function display_blank(ima, name){
-	$('#res-table').append("<tr>");
+	var str = '<tr attr-record="' + ima + '">';
 
-	$('#res-table').append("<td>" + ima + "</td>");
-	$('#res-table').append("<td>" + name + "</td>");
-	$('#res-table').append("<td> N/A </td>");
-	$('#res-table').append("<td> N/A </td>");
-	$('#res-table').append("<td> N/A </td>");
+	str += "<td>" + ima + "</td>";
+	str +="<td>" + name + "</td>";
+	str +="<td> N/A </td>";
+	str +="<td> N/A </td>";
+	str +="<td> N/A </td>";
 
+	str += "</tr>";
 
-	$('#res-table').append("</tr>");
+	$('#res-table').append(str);
 }
 
 function display_stock(ima, name, stock){
-	$('#res-table').append("<tr>");
 
-	$('#res-table').append("<td>" + ima + "</td>");
-	$('#res-table').append("<td>" + name + "</td>");
-	$('#res-table').append("<td>" + stock["HLD"] + "</td>");
-	$('#res-table').append("<td>" + stock["COST"] + "</td>");
-	$('#res-table').append("<td>" + stock["PORT"] + "</td>");
+	var str = '<tr attr-record="' + ima + '">';
+
+	str += "<td>" + ima + "</td>";
+	str +="<td>" + name + "</td>";
+	str +="<td>" + stock["HLD"] + "</td>";
+	str +="<td>" + stock["COST"] + "</td>";
+	str +="<td>" + stock["PORT"] + "</td>";
+
+	str += "</tr>";
+
+	$('#res-table').append(str);
+
+	var num = parseInt(stock["HLD"].replace(/,/g, ''));
+
+	return num;
+}
 
 
-	$('#res-table').append("</tr>");
+function display_modal(res, key, attr){
+
+	$('#displaySingle').modal({
+		keyboard:true
+	});
+
+	var found = null;
+
+	var totalMV = 0;
+
+	for(var i=0; i<res.length; i++){
+		if(res[i]["IMA"] == attr){
+			found = res[i];
+		}
+	}
+
+	for(var stock_code in found["STOCKS"]){
+		var raw = found["STOCKS"][stock_code]["MARKET"];
+		totalMV += raw;
+	}
+
+	var stockDetails = found["STOCKS"][key];
+
+	$('#modal-ima').html(found["IMA"]);
+	$('#modal-name').html(found["NAME"]);
+	$('#modal-hld').html(stockDetails["HLD"]);
+	$('#modal-cost').html(stockDetails["COST"]);
+	$('#modal-old').html(stockDetails["PORT"]);
+
+	console.log(parseFloat(stockDetails["MP"]));
+	$('#modal-mp').val(parseFloat(stockDetails["MP"]));
+
+	$('#modal-calculate').click(function(e){
+		var newPort = $('#modal-new').val();
+
+		if(newPort == ''){
+			alert("Please Enter a Value");
+			return;
+		}
+
+		var amount = 0;
+		if(newPort > stockDetails["PORT"]){
+			$('#modal-buysell').html("BUY");
+			amount = newPort - parseFloat(stockDetails["PORT"])
+		} else {
+			$('#modal-buysell').html("Sell");
+			amount = parseFloat(stockDetails["PORT"]) - newPort;
+		}
+
+		amount *= totalMV;
+		amount /= parseFloat(stockDetails["MP"]);
+
+		$('#modal-result').val(Math.floor(amount));
+	})
+
+
+
+}
+
+function display_hld(total){
+	var str = '<tr disabled>';
+
+	str += "<td></td>";
+	str +="<td></td>";
+	str +="<td><b>" + total + "</b></td>";
+	str += "<td></td>";
+	str +="<td></td>";
+
+	str += "</tr>";
+
+	$('#res-table').append(str);
 }
 
 function update_table(key, res){
 	$('#res-table').html("");
+	var hld_total = 0;
 
-	res.forEach(function(item){
-		var stocks = item["STOCKS"];
+
+	for(var i=0; i<res.length; i++){
+		var stocks = res[i]["STOCKS"];
 
 		if(typeof stocks[key] === "undefined"){
-			display_blank(item["IMA"], item["NAME"]);
+			display_blank(res[i]["IMA"], res[i]["NAME"]);
+			continue;
+		}
+		hld_total += display_stock(res[i]["IMA"], res[i]["NAME"], stocks[key]);
+	}
+
+
+	display_hld(hld_total);
+
+
+	$('#res-table tr').click(function(e){
+		var target = $(e.target);
+		if(target.is("td")){
+			target = target.parent();
+		}
+
+		if(target.is(":last-child")){
 			return;
 		}
-		display_stock(item["IMA"], item["NAME"], stocks[key]);
+
+		var attr = target.attr("attr-record");
+		display_modal(res, key, attr);
 	})
 
 }
@@ -160,35 +259,43 @@ function process_csv(txt){
 				continue;
 			}
 
-			//console.log(split);
 
 			var secName;
 
 			if(alternate){
 				secName = split[4];
 
-				if(typeof split[5] == "undefined"){
-					console.log(split);
+				if(secName.charAt(0) == ' '){
+					secName = secName.slice(1, -1);
 				}
 
 				var hld = split[5].replace(/['"]+/g, '');
+				var market = split[7].replace(/,/g, '');
+				market = market.replace(/['"]+/g, '')
+
 				res[latest]["STOCKS"][secName] = {
 					"HLD": hld,
 					"COST": split[6],
-					"PORT": split[11]
+					"PORT": split[11],
+					"MARKET": parseFloat(market),
+					"MP": split[7]
 				};
 			} else {
 				secName = split[0];
 
-				if(typeof split[3] == "undefined"){
-					console.log(split);
+				if(secName.charAt(0) == ' '){
+					secName = secName.slice(1, -1);
 				}
-
 				var hld = split[3].replace(/['"]+/g, '');
+				var market = split[7].replace(/,/g, '');
+				market = market.replace(/['"]+/g, '')
+
 				res[latest]["STOCKS"][secName] = {
 					"HLD": hld,
 					"COST": split[4],
-					"PORT": split[10]
+					"PORT": split[10],
+					"MARKET": parseFloat(market),
+					"MP": split[6]
 				};
 			}
 		}
@@ -215,6 +322,8 @@ function process_wb(workbook) {
 function reset(){
 	$('#res-table').html("");
 	$('#stock-type').find('option').remove().end().append('<option value="">Please Select A Stock Type</option>');
+	compiled = [];
+
 }
 
 $(document).ready(function(){

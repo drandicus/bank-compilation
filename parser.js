@@ -681,6 +681,9 @@ for(var i=0; i<arr.length; i++){
 
 		if(alternate){
 			secName = split[4];
+			if(secName.charAt(0) == ' '){
+				secName.substring(1);
+			}
 			res[latest]["STOCKS"][secName] = {
 				"HLD": split[5],
 				"COST": split[6],
@@ -688,8 +691,10 @@ for(var i=0; i<arr.length; i++){
 				"MARKET": split[8]
 			};
 		} else {
-			console.log(split);
 			secName = split[0];
+			if(secName.charAt(0) == ' '){
+				secName.substring(1);
+			}
 			res[latest]["STOCKS"][secName] = {
 				"HLD": split[3],
 				"COST": split[4],
@@ -697,6 +702,8 @@ for(var i=0; i<arr.length; i++){
 				"MARKET": split[7]
 			};
 		}
+
+		console.log(secName);
 	}
 }
 
